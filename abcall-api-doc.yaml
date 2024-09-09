@@ -1,0 +1,300 @@
+openapi: 3.0.0
+info:
+  title: ABCall API Documentation
+  description: API documentation for the microservices in ABCall project.
+  version: 1.0.0
+servers:
+  - url: https://api.abcall.com
+    description: Production server
+
+paths:
+  /api/auth/login:
+    post:
+      summary: Iniciar sesión
+      requestBody:
+        description: Credenciales de usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Sesión iniciada exitosamente
+        '401':
+          description: Autenticación fallida
+
+  /api/auth/logout:
+    post:
+      summary: Cerrar sesión
+      responses:
+        '200':
+          description: Sesión cerrada exitosamente
+          
+  /api/auth/register:
+    post:
+      summary: Registrar un nuevo usuario
+      requestBody:
+        description: Información del nuevo usuario
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: Usuario registrado exitosamente
+
+  /api/auth/{userId}/permissions:
+    put:
+      summary: Actualizar permisos de un usuario
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Permisos a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                permissions:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Permisos actualizados exitosamente
+
+  /api/campana:
+    post:
+      summary: Crear una nueva campaña
+      requestBody:
+        description: Información de la campaña
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                startDate:
+                  type: string
+                endDate:
+                  type: string
+      responses:
+        '201':
+          description: Campaña creada exitosamente
+
+  /api/campana/{campanaId}/status:
+    put:
+      summary: Actualizar el estado de la campaña
+      parameters:
+        - name: campanaId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Estado de la campaña a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [active, paused, cancelled]
+      responses:
+        '200':
+          description: Estado actualizado exitosamente
+
+  /api/incidentes:
+    post:
+      summary: Crear un nuevo incidente
+      requestBody:
+        description: Detalles del incidente
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                clientId:
+                  type: string
+                priority:
+                  type: string
+      responses:
+        '201':
+          description: Incidente creado exitosamente
+
+  /api/incidentes/{incidentId}:
+    put:
+      summary: Actualizar un incidente
+      parameters:
+        - name: incidentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Datos del incidente a actualizar
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                status:
+                  type: string
+      responses:
+        '200':
+          description: Incidente actualizado exitosamente
+
+  /api/incidentes/{incidentId}/escalate:
+    patch:
+      summary: Escalar un incidente
+      parameters:
+        - name: incidentId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Incidente escalado exitosamente
+
+  /api/pqrs:
+    post:
+      summary: Crear una nueva PQR
+      requestBody:
+        description: Detalles de la PQR
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                clientId:
+                  type: string
+                tipo:
+                  type: string
+      responses:
+        '201':
+          description: PQR creada exitosamente
+
+  /api/notificaciones:
+    post:
+      summary: Crear una nueva notificación
+      requestBody:
+        description: Detalles de la notificación
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipient:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '201':
+          description: Notificación creada exitosamente
+
+  /api/billing:
+    post:
+      summary: Crear una nueva factura
+      requestBody:
+        description: Detalles de la factura
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                amount:
+                  type: number
+      responses:
+        '201':
+          description: Factura creada exitosamente
+
+    get:
+      summary: Obtener detalles de una factura
+      parameters:
+        - name: invoiceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalles de la factura
+
+  /api/contratos:
+    post:
+      summary: Crear un nuevo contrato
+      requestBody:
+        description: Detalles del contrato
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                terms:
+                  type: string
+      responses:
+        '201':
+          description: Contrato creado exitosamente
+
+  /api/sla:
+    post:
+      summary: Crear un SLA
+      requestBody:
+        description: Detalles del SLA
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                description:
+                  type: string
+                terms:
+                  type: string
+      responses:
+        '201':
+          description: SLA creado exitosamente
